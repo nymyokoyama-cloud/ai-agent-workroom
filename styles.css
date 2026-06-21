@@ -315,9 +315,9 @@ p {
 
 .hero-work-card img {
   width: 100%;
+  max-width: 100%;
   height: auto;
-  aspect-ratio: 16 / 9;
-  object-fit: cover;
+  background: #02050d;
 }
 
 .hero-work-card--1 {
@@ -547,8 +547,9 @@ p {
 
 .work-image img {
   width: 100%;
-  aspect-ratio: 16 / 9;
-  object-fit: cover;
+  max-width: 100%;
+  height: auto;
+  background: #02050d;
   transition: transform 220ms ease;
 }
 
@@ -756,6 +757,7 @@ p {
 .detail-image {
   position: relative;
   overflow: hidden;
+  margin: 0;
   border: 1px solid rgba(91,147,255,0.34);
   border-radius: var(--radius);
   background: rgba(8, 15, 31, 0.7);
@@ -764,8 +766,9 @@ p {
 
 .detail-image img {
   width: 100%;
-  aspect-ratio: 16 / 9;
-  object-fit: cover;
+  max-width: 100%;
+  height: auto;
+  background: #02050d;
 }
 
 .detail-summary {
@@ -846,8 +849,9 @@ p {
 
 .related-card img {
   width: 100%;
-  aspect-ratio: 16 / 9;
-  object-fit: cover;
+  max-width: 100%;
+  height: auto;
+  background: #02050d;
 }
 
 .related-card span {
@@ -946,7 +950,6 @@ p {
 
   .hero-work-card img {
     height: auto;
-    aspect-ratio: 16 / 10;
   }
 
   .category-strip,
@@ -987,6 +990,10 @@ p {
 
   .detail-summary h1 {
     font-size: 2rem;
+  }
+
+  .detail-main {
+    padding-top: 172px;
   }
 }
 
