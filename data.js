@@ -150,18 +150,159 @@ window.AGENT_WORKS_CASES = [
     tags: ["静的サイト", "MVP", "Cloudflare"]
   },
   {
-    id: "ai-agent-workroom-glass-ui",
-    title: "AI Agent Workroomの近未来Glass UIを公開する",
+    id: "ai-agent-workroom-dark-gallery-ui",
+    title: "AI Agent Workroomの黒背景ギャラリーUIを公開する",
     agent: "Codex",
     category: "Web制作",
-    purpose: "AIでできたことを見せる事例サイトを、見た目そのものでも制作実績になる品質へ引き上げる。",
-    result: "白い近未来オフィス風の背景、ガラスカード、スクロール連動ヒーロー、左右から集まるセクション演出まで実装してCloudflare Pagesへ公開できた。",
+    purpose: "AIでできた制作物を寝る前にも眺めやすい黒背景の作品ギャラリーとして見せ、詳細ページをSEO資産として増やせる形にする。",
+    result: "黒背景、青い発光、画像付き作品カード、詳細ページ、いいね表示、人気順・おすすめ順・将来のピックアップ枠まで実装してCloudflare Pagesへ公開できた。",
     input: "サイトの目的、参考画像、既存の静的サイト一式、GitHubとCloudflare Pagesの公開環境。",
-    humanCheck: "ブランドの温度感、派手さの許容ライン、販売導線へつなげる文言は人間が判断するとよい。",
-    fit: "AIで作ったサイトを単なる試作品ではなく、制作依頼につながるポートフォリオにしたい人。",
-    caution: "リッチ演出はスマホ表示と読み込み速度を確認しながら入れる必要がある。",
+    humanCheck: "夜に見ても眩しくない暗さ、作品カードの見せ方、販売導線へつなげる文言は人間が判断するとよい。",
+    fit: "AIで作った制作物をカード化し、サービス販売や制作依頼につながるポートフォリオにしたい人。",
+    caution: "いいね数は現時点ではローカル保存の試作。全体集計には将来的にDBが必要。",
     link: "https://acs-developer.com/",
     linkLabel: "サイト制作相談を見る",
-    tags: ["Glass UI", "Cloudflare", "制作実績"]
+    tags: ["Dark UI", "詳細ページ", "制作実績"]
   }
 ];
+
+const WORK_CASE_META = {
+  "wordpress-daily-publish": {
+    summary: "反応ログとPDCAを見て、その日に書くべき記事を3本選び、WordPressへ公開まで進めた運用事例。",
+    likes: 128,
+    timeAgo: "今日",
+    author: "@acs_operator",
+    role: "WordPress運用 / AI秘書",
+    metricLabel: "公開本数",
+    before: "0本",
+    after: "3本",
+    featured: true
+  },
+  "wordpress-image-insert": {
+    summary: "生成済みのアイキャッチと挿絵を、複数の記事へ対応順に挿入した制作補助事例。",
+    likes: 96,
+    timeAgo: "今日",
+    author: "@acs_operator",
+    role: "WordPress運用 / 画像反映",
+    metricLabel: "画像反映",
+    before: "未挿入",
+    after: "12枚",
+    featured: true
+  },
+  "obsidian-secretary-review": {
+    summary: "Obsidian Vaultを読み、朝レビュー・夜まとめ・タスク判断までつなげたAI秘書の実践ログ。",
+    likes: 211,
+    timeAgo: "1日前",
+    author: "@locany_workroom",
+    role: "AI秘書 / Obsidian運用",
+    metricLabel: "整理範囲",
+    before: "散在",
+    after: "日次化",
+    featured: true
+  },
+  "note-publish-blog": {
+    summary: "Obsidianの下書きをnoteへ移し、タグ、マガジン、公開設定まで整えた発信運用事例。",
+    likes: 84,
+    timeAgo: "1日前",
+    author: "@locany_note",
+    role: "note運用 / 編集",
+    metricLabel: "公開準備",
+    before: "下書き",
+    after: "公開"
+  },
+  "diginote-ai-update": {
+    summary: "AI企業リサーチから一次情報を確認し、DiginoteAI向けの記事更新へつなげたニュース運用事例。",
+    likes: 172,
+    timeAgo: "2日前",
+    author: "@diginoteai",
+    role: "AIニュース / リサーチ",
+    metricLabel: "更新",
+    before: "調査",
+    after: "記事化",
+    recommended: true
+  },
+  "threads-draft-stock": {
+    summary: "日々の会話や作業ログから、手動リライト前提のThreads投稿案をストックする運用設計。",
+    likes: 143,
+    timeAgo: "2日前",
+    author: "@nanachan0410",
+    role: "SNS運用 / トンマナ学習",
+    metricLabel: "投稿案",
+    before: "0案",
+    after: "30案"
+  },
+  "search-console-check": {
+    summary: "Search Consoleの表示、クリック、CTR、インデックス状況を確認し、次の改善候補を切り分けた分析ログ。",
+    likes: 75,
+    timeAgo: "3日前",
+    author: "@seo_workroom",
+    role: "SEO分析 / Search Console",
+    metricLabel: "確認項目",
+    before: "曖昧",
+    after: "4項目"
+  },
+  "theme-route-improvement": {
+    summary: "TOPページから記事一覧、カテゴリ、新着記事へ回すためのWordPressテーマ導線を改善した制作事例。",
+    likes: 189,
+    timeAgo: "3日前",
+    author: "@acs_developer",
+    role: "WordPressテーマ / 回遊設計",
+    metricLabel: "導線",
+    before: "検索流入のみ",
+    after: "TOP回遊",
+    recommended: true
+  },
+  "youtube-script-slides": {
+    summary: "noteやサイト運用の内容を、YouTubeの台本とスライド構成へ展開した動画制作準備の事例。",
+    likes: 64,
+    timeAgo: "4日前",
+    author: "@diginote_video",
+    role: "YouTube / 台本設計",
+    metricLabel: "制作状態",
+    before: "記事",
+    after: "収録前"
+  },
+  "cloudflare-static-mvp": {
+    summary: "サーバーを持たず、Cloudflare Pagesで検索・カテゴリ・詳細表示つきの静的MVPを公開した事例。",
+    likes: 156,
+    timeAgo: "4日前",
+    author: "@workroom_build",
+    role: "静的サイト / Cloudflare",
+    metricLabel: "公開費用",
+    before: "未公開",
+    after: "無料枠",
+    recommended: true
+  },
+  "ai-agent-workroom-dark-gallery-ui": {
+    summary: "AI Agent Workroom自体を、制作実績として見せられる黒背景の作品ギャラリー型サイトへ再設計した事例。",
+    likes: 242,
+    timeAgo: "今夜",
+    author: "@workroom_build",
+    role: "Web制作 / UIデザイン",
+    metricLabel: "サイト状態",
+    before: "普通",
+    after: "作品化",
+    featured: true,
+    recommended: true
+  }
+};
+
+window.AGENT_WORKS_CASES = window.AGENT_WORKS_CASES.map((item, index) => {
+  const meta = WORK_CASE_META[item.id] || {};
+  return {
+    ...item,
+    ...meta,
+    image: `./assets/work-previews/${item.id}.png`,
+    imageAlt: `${item.title} の制作物プレビュー`,
+    detailUrl: `./works/${item.id}/`,
+    galleryCount: meta.galleryCount || 1,
+    likes: meta.likes || 24 + index * 7,
+    timeAgo: meta.timeAgo || "公開中",
+    author: meta.author || "@ai_agent_workroom",
+    role: meta.role || `${item.agent} / ${item.category}`,
+    metricLabel: meta.metricLabel || "制作結果",
+    before: meta.before || "依頼前",
+    after: meta.after || "完了",
+    summary: meta.summary || item.result
+  };
+});

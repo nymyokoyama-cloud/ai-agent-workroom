@@ -1,146 +1,195 @@
 const state = {
   query: "",
   category: "すべて",
-  agent: "すべて",
   sort: "new"
 };
 
 const cases = window.AGENT_WORKS_CASES || [];
 const caseGrid = document.querySelector("[data-case-grid]");
+const popularGrid = document.querySelector("[data-popular-grid]");
+const heroShowcase = document.querySelector("[data-hero-showcase]");
+const categoryStrip = document.querySelector("[data-category-strip]");
 const countLabel = document.querySelector("[data-count]");
 const searchInput = document.querySelector("[data-search]");
-const heroForm = document.querySelector("[data-hero-form]");
-const heroSearchInput = document.querySelector("[data-hero-search]");
 const categoryRow = document.querySelector("[data-categories]");
-const agentRow = document.querySelector("[data-agents]");
+const sortButtons = Array.from(document.querySelectorAll("[data-sort]"));
 const emptyState = document.querySelector("[data-empty]");
-const modal = document.querySelector("[data-modal]");
-const modalPanel = document.querySelector("[data-modal-panel]");
-const modalClose = document.querySelector("[data-modal-close]");
-const hero = document.querySelector("[data-hero]");
-const heroStage = document.querySelector("[data-hero-stage]");
-const revealTargets = new Set();
 
-function uniqueValues(key) {
-  return ["すべて", ...Array.from(new Set(cases.map((item) => item[key]))).sort((a, b) => a.localeCompare(b, "ja"))];
+function uniqueCategories() {
+  return ["すべて", ...Array.from(new Set(cases.map((item) => item.category))).sort((a, b) => a.localeCompare(b, "ja"))];
 }
 
-function createChip(label, type) {
-  const button = document.createElement("button");
-  button.type = "button";
-  button.className = "chip";
-  button.textContent = label;
-  button.dataset.value = label;
-  button.setAttribute("aria-pressed", state[type] === label ? "true" : "false");
-  button.addEventListener("click", () => {
-    state[type] = label;
-    render();
-  });
-  return button;
-}
-
-function renderChips() {
-  categoryRow.replaceChildren(...uniqueValues("category").map((label) => createChip(label, "category")));
-  agentRow.replaceChildren(...uniqueValues("agent").map((label) => createChip(label, "agent")));
+function categoryCounts() {
+  return cases.reduce((acc, item) => {
+    acc[item.category] = (acc[item.category] || 0) + 1;
+    return acc;
+  }, {});
 }
 
 function filteredCases() {
   const q = state.query.trim().toLowerCase();
-  return cases.filter((item) => {
+  const list = cases.filter((item) => {
     const matchesCategory = state.category === "すべて" || item.category === state.category;
-    const matchesAgent = state.agent === "すべて" || item.agent === state.agent;
     const searchable = [
       item.title,
       item.agent,
       item.category,
       item.purpose,
       item.result,
+      item.summary,
       item.fit,
+      item.author,
       item.tags.join(" ")
     ].join(" ").toLowerCase();
-    return matchesCategory && matchesAgent && (!q || searchable.includes(q));
+    return matchesCategory && (!q || searchable.includes(q));
+  });
+
+  return list.sort((a, b) => {
+    if (state.sort === "popular") return getLikeScore(b) - getLikeScore(a);
+    if (state.sort === "recommended") return Number(Boolean(b.recommended)) - Number(Boolean(a.recommended)) || getLikeScore(b) - getLikeScore(a);
+    return cases.indexOf(b) - cases.indexOf(a);
   });
 }
 
-function renderCard(item, index) {
+function getLikeScore(item) {
+  return Number(item.likes || 0) + (window.AgentWorkroomLikes?.isLiked(item.id) ? 1 : 0);
+}
+
+function renderChips() {
+  categoryRow.replaceChildren(...uniqueCategories().map((label) => {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "chip";
+    button.textContent = label;
+    button.setAttribute("aria-pressed", state.category === label ? "true" : "false");
+    button.addEventListener("click", () => {
+      state.category = label;
+      render();
+    });
+    return button;
+  }));
+}
+
+function renderCategoryStrip() {
+  const counts = categoryCounts();
+  categoryStrip.replaceChildren(...Object.entries(counts)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 7)
+    .map(([name, count], index) => {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "category-card";
+      button.innerHTML = `
+        <span class="category-icon">${String(index + 1).padStart(2, "0")}</span>
+        <span>
+          <strong>${escapeHtml(name)}</strong>
+          <small>${count}件の作品</small>
+        </span>
+      `;
+      button.addEventListener("click", () => {
+        state.category = name;
+        document.querySelector("#works").scrollIntoView({ behavior: "smooth", block: "start" });
+        render();
+      });
+      return button;
+    }));
+}
+
+function renderHeroShowcase() {
+  const items = cases.filter((item) => item.featured).slice(0, 3);
+  heroShowcase.replaceChildren(...items.map((item, index) => {
+    const card = document.createElement("a");
+    card.className = `hero-work-card hero-work-card--${index + 1}`;
+    card.href = item.detailUrl;
+    card.innerHTML = `
+      <img src="${escapeAttribute(item.image)}" alt="${escapeAttribute(item.imageAlt)}" loading="${index === 0 ? "eager" : "lazy"}">
+      <span class="featured-badge">${index === 0 ? "Featured" : item.category}</span>
+      <span class="image-count">1/${item.galleryCount}</span>
+      <span class="hero-card-body">
+        <small>${escapeHtml(item.category)}</small>
+        <strong>${escapeHtml(item.title)}</strong>
+        <span>${escapeHtml(item.summary)}</span>
+      </span>
+    `;
+    return card;
+  }));
+}
+
+function renderPopular() {
+  const items = [...cases].sort((a, b) => getLikeScore(b) - getLikeScore(a)).slice(0, 3);
+  popularGrid.replaceChildren(...items.map((item) => renderWorkCard(item, true)));
+}
+
+function renderWorkCard(item, compact = false) {
   const article = document.createElement("article");
-  article.className = "work-card glass-panel";
-  article.dataset.reveal = "";
-  article.style.setProperty("--reveal-delay", `${Math.min(index * 55, 440)}ms`);
+  article.className = `work-card${compact ? " work-card--compact" : ""}`;
   article.innerHTML = `
-    <div class="work-card__meta">
-      <span>${escapeHtml(item.agent)}</span>
-      <span>${escapeHtml(item.category)}</span>
+    <a class="work-image" href="${escapeAttribute(item.detailUrl)}" aria-label="${escapeAttribute(item.title)} の詳細を見る">
+      <img src="${escapeAttribute(item.image)}" alt="${escapeAttribute(item.imageAlt)}" loading="lazy" width="1200" height="760">
+      <span class="image-count">1/${item.galleryCount}</span>
+      ${item.recommended ? '<span class="featured-badge">Recommended</span>' : ""}
+    </a>
+    <div class="work-body">
+      <div class="work-meta">
+        <span>${escapeHtml(item.category)}</span>
+        <span>${escapeHtml(item.timeAgo)}</span>
+      </div>
+      <h3><a href="${escapeAttribute(item.detailUrl)}">${escapeHtml(item.title)}</a></h3>
+      <p>${escapeHtml(item.summary)}</p>
+      <div class="metric-box">
+        <span>${escapeHtml(item.metricLabel)}</span>
+        <strong>${escapeHtml(item.before)} <span>→</span> ${escapeHtml(item.after)}</strong>
+      </div>
+      <div class="tag-list">
+        ${item.tags.slice(0, 3).map((tag) => `<span># ${escapeHtml(tag)}</span>`).join("")}
+      </div>
     </div>
-    <h3>${escapeHtml(item.title)}</h3>
-    <p>${escapeHtml(item.result)}</p>
-    <div class="tag-list">
-      ${item.tags.map((tag) => `<span>${escapeHtml(tag)}</span>`).join("")}
+    <div class="card-footer">
+      <div class="author">
+        <span class="avatar">${escapeHtml(item.author.slice(1, 3).toUpperCase())}</span>
+        <span>
+          <strong>${escapeHtml(item.author)}</strong>
+          <small>${escapeHtml(item.role)}</small>
+        </span>
+      </div>
+      <div class="card-actions">
+        <button type="button" class="like-button" data-like-id="${escapeAttribute(item.id)}" data-like-base="${Number(item.likes || 0)}" aria-label="${escapeAttribute(item.title)} にいいね">Like <span data-like-count>${Number(item.likes || 0)}</span></button>
+        <a class="detail-button" href="${escapeAttribute(item.detailUrl)}">詳細を見る</a>
+      </div>
     </div>
-    <button type="button" class="card-action" data-open="${escapeHtml(item.id)}">事例を見る</button>
   `;
-  article.querySelector("[data-open]").addEventListener("click", () => openModal(item));
   return article;
 }
 
 function render() {
   renderChips();
+  renderCategoryStrip();
+  renderHeroShowcase();
+  renderPopular();
+
   const list = filteredCases();
   countLabel.textContent = `${list.length}件`;
-  caseGrid.replaceChildren(...list.map(renderCard));
+  caseGrid.replaceChildren(...list.map((item) => renderWorkCard(item)));
   emptyState.hidden = list.length !== 0;
-  observeRevealTargets(caseGrid.querySelectorAll("[data-reveal]"));
+  sortButtons.forEach((button) => {
+    button.setAttribute("aria-pressed", state.sort === button.dataset.sort ? "true" : "false");
+  });
+  window.AgentWorkroomLikes?.hydrate();
 }
 
 function setQuery(value) {
   state.query = value;
-  if (searchInput.value !== value) searchInput.value = value;
-  if (heroSearchInput.value !== value) heroSearchInput.value = value;
   render();
 }
 
-function openModal(item) {
-  modalPanel.innerHTML = `
-    <div class="modal-top">
-      <div>
-        <p class="eyebrow">${escapeHtml(item.agent)} / ${escapeHtml(item.category)}</p>
-        <h2>${escapeHtml(item.title)}</h2>
-      </div>
-      <button type="button" class="icon-button" aria-label="閉じる" data-modal-close-inline>×</button>
-    </div>
-    <dl class="case-detail">
-      ${detailRow("作業の目的", item.purpose)}
-      ${detailRow("できたこと", item.result)}
-      ${detailRow("必要だった入力", item.input)}
-      ${detailRow("人間が確認したところ", item.humanCheck)}
-      ${detailRow("向いている人", item.fit)}
-      ${detailRow("注意点", item.caution)}
-    </dl>
-    <div class="modal-footer">
-      <div class="tag-list">
-        ${item.tags.map((tag) => `<span>${escapeHtml(tag)}</span>`).join("")}
-      </div>
-      <a href="${escapeAttribute(item.link)}" target="_blank" rel="ugc nofollow noopener noreferrer" class="primary-link">${escapeHtml(item.linkLabel)}</a>
-    </div>
-  `;
-  modal.hidden = false;
-  document.body.classList.add("is-modal-open");
-  modalPanel.querySelector("[data-modal-close-inline]").addEventListener("click", closeModal);
-}
+searchInput.addEventListener("input", (event) => setQuery(event.target.value));
 
-function detailRow(label, value) {
-  return `
-    <div>
-      <dt>${escapeHtml(label)}</dt>
-      <dd>${escapeHtml(value)}</dd>
-    </div>
-  `;
-}
-
-function closeModal() {
-  modal.hidden = true;
-  document.body.classList.remove("is-modal-open");
-}
+sortButtons.forEach((button) => {
+  button.addEventListener("click", () => {
+    state.sort = button.dataset.sort;
+    render();
+  });
+});
 
 function escapeHtml(value) {
   return String(value)
@@ -155,63 +204,4 @@ function escapeAttribute(value) {
   return escapeHtml(value).replaceAll("`", "&#096;");
 }
 
-searchInput.addEventListener("input", (event) => {
-  setQuery(event.target.value);
-});
-
-heroSearchInput.addEventListener("input", (event) => {
-  setQuery(event.target.value);
-});
-
-heroForm.addEventListener("submit", (event) => {
-  event.preventDefault();
-  setQuery(heroSearchInput.value);
-  document.querySelector("#cases").scrollIntoView({ behavior: "smooth", block: "start" });
-});
-
-modal.addEventListener("click", (event) => {
-  if (event.target === modal) closeModal();
-});
-
-modalClose.addEventListener("click", closeModal);
-
-document.addEventListener("keydown", (event) => {
-  if (event.key === "Escape" && !modal.hidden) closeModal();
-});
-
-function updateHeroProgress() {
-  if (!hero || !heroStage) return;
-  const rect = hero.getBoundingClientRect();
-  const travel = Math.max(1, hero.offsetHeight - window.innerHeight);
-  const progress = Math.min(1, Math.max(0, -rect.top / travel));
-  hero.style.setProperty("--hero-progress", progress.toFixed(4));
-  heroStage.style.setProperty("--hero-progress", progress.toFixed(4));
-}
-
-const revealObserver = "IntersectionObserver" in window
-  ? new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add("is-visible");
-        }
-      });
-    }, { threshold: 0.18, rootMargin: "0px 0px -8% 0px" })
-  : null;
-
-function observeRevealTargets(targets) {
-  targets.forEach((target) => {
-    if (revealTargets.has(target)) return;
-    revealTargets.add(target);
-    if (revealObserver) {
-      revealObserver.observe(target);
-    } else {
-      target.classList.add("is-visible");
-    }
-  });
-}
-
-window.addEventListener("scroll", updateHeroProgress, { passive: true });
-window.addEventListener("resize", updateHeroProgress);
-observeRevealTargets(document.querySelectorAll("[data-reveal]"));
-updateHeroProgress();
 render();

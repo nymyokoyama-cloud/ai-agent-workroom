@@ -1,6 +1,6 @@
 # AI Agent Workroom
 
-AIエージェントで実際にできた作業を集める、静的な「できたことログ」MVPです。2026-06-21に、制作実績としても見せられるGlass UIへリデザインしました。
+AIエージェントで実際にできた作業を集める、静的な「できたことログ」MVPです。2026-06-21に、黒背景の作品ギャラリー型サイトへリデザインしました。
 
 ## 公開方法
 
@@ -28,6 +28,7 @@ https://ai-agent-workroom.pages.dev
 ローカルで編集して `main` へpushすると、Cloudflare Pagesが自動で本番へ反映します。
 
 ```bash
+node tools/build-pages.mjs
 git add .
 git commit -m "Update workroom cases"
 git push
@@ -48,16 +49,19 @@ Git連携前に試すだけなら、Cloudflare PagesのDirect Uploadでも公開
 - `data.js`: 掲載事例のデータ
 - `index.html`: ページ構造
 - `styles.css`: デザイン
-- `app.js`: 検索、絞り込み、詳細モーダル
-- `assets/workroom-atrium.png`: OGP兼ヒーロー背景画像
+- `app.js`: 検索、絞り込み、人気順、おすすめ順、カード描画
+- `likes.js`: ローカル保存のいいねUI
+- `tools/build-pages.mjs`: `data.js` から詳細ページとサイトマップを生成
+- `assets/workroom-dark-hero.png`: OGP兼ヒーロー背景画像
+- `assets/work-previews/`: 作品カード用サムネイル
 
 ## デザイン方針
 
-- IBMオフィスのような白い近未来空間を背景にする
-- SF風の暗いUIではなく、透明感のあるGlass UIに寄せる
-- ヒーローは初期表示で全画面に近く見せ、スクロールでひねりながらフェードアウトする
-- セクションやカードは左右から集まるように表示し、静的サイトでも制作実績として見せられる品質を狙う
-- このサイト自体も「AIでできたこと」の事例として掲載し、制作相談導線につなげる
+- 夜に布団の中で見ても眩しくない黒背景を基調にする
+- 添付参考のような、青い発光とクリエイティブな作品カードUIに寄せる
+- 一覧カードには投稿者画像相当の制作物サムネイル、概要、タグ、投稿者、いいね数を表示する
+- 「詳細を見る」で個別ページへ移動し、ページ数を増やしてSEO資産化する
+- いいね数、人気順、おすすめ順、将来のピックアップ掲載枠を想定した構造にする
 
 ## 掲載方針
 
@@ -70,7 +74,7 @@ Git連携前に試すだけなら、Cloudflare PagesのDirect Uploadでも公開
 ## 次の拡張候補
 
 - 事例カテゴリの追加
-- 検索流入を狙う個別事例ページ化
+- 検索流入を狙う個別事例ページを増やす
 - 投稿フォームの追加
 - Supabaseなどを使った承認制投稿
 - ACS Developerやnote記事への導線強化
