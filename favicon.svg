@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="AI Agent Workroom">
+  <rect width="64" height="64" rx="12" fill="#16202f"/>
+  <path d="M16 46 25 16h7l9 30h-7l-1.6-6H23.5l-1.6 6h-5.9Zm9-12h5.9l-2.9-11L25 34Zm22 12V16h6v30h-6Z" fill="#f6f8fb"/>
+  <path d="M13 50h38" stroke="#0e9fc5" stroke-width="4" stroke-linecap="round"/>
+</svg>
