@@ -148,5 +148,20 @@ window.AGENT_WORKS_CASES = [
     link: "https://pages.cloudflare.com/",
     linkLabel: "Cloudflare Pages",
     tags: ["静的サイト", "MVP", "Cloudflare"]
+  },
+  {
+    id: "ai-agent-workroom-glass-ui",
+    title: "AI Agent Workroomの近未来Glass UIを公開する",
+    agent: "Codex",
+    category: "Web制作",
+    purpose: "AIでできたことを見せる事例サイトを、見た目そのものでも制作実績になる品質へ引き上げる。",
+    result: "白い近未来オフィス風の背景、ガラスカード、スクロール連動ヒーロー、左右から集まるセクション演出まで実装してCloudflare Pagesへ公開できた。",
+    input: "サイトの目的、参考画像、既存の静的サイト一式、GitHubとCloudflare Pagesの公開環境。",
+    humanCheck: "ブランドの温度感、派手さの許容ライン、販売導線へつなげる文言は人間が判断するとよい。",
+    fit: "AIで作ったサイトを単なる試作品ではなく、制作依頼につながるポートフォリオにしたい人。",
+    caution: "リッチ演出はスマホ表示と読み込み速度を確認しながら入れる必要がある。",
+    link: "https://acs-developer.com/",
+    linkLabel: "サイト制作相談を見る",
+    tags: ["Glass UI", "Cloudflare", "制作実績"]
   }
 ];

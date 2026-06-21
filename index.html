@@ -8,7 +8,7 @@
     <meta property="og:title" content="AI Agent Workroom">
     <meta property="og:description" content="AIエージェントで実際にできたことを検索できる事例Wiki。">
     <meta property="og:type" content="website">
-    <meta property="og:image" content="./assets/agent-works-hero.png">
+    <meta property="og:image" content="./assets/workroom-atrium.png">
     <link rel="icon" href="./favicon.svg" type="image/svg+xml">
     <link rel="stylesheet" href="./styles.css">
   </head>
@@ -29,36 +29,66 @@
     </header>
 
     <main id="top">
-      <section class="hero-section" aria-labelledby="hero-title">
-        <div class="hero-copy">
-          <p class="eyebrow">AIエージェントに課金する前に覗く作業部屋</p>
-          <h1 id="hero-title">AIエージェントで実際にできたことを探す</h1>
-          <p class="lead">Codex、Claude Code、ChatGPTなどで完了できた作業事例を集める図鑑です。詳しい手順ではなく、何ができたか、どんな入力が必要だったか、人間が確認したところを短く整理します。</p>
-          <form class="hero-search" data-hero-form>
-            <label>
-              <span>何ができるか探す</span>
-              <input type="search" placeholder="WordPress、note、Obsidian、YouTube" data-hero-search>
-            </label>
-            <button type="submit">検索</button>
-          </form>
-          <div class="hero-actions">
-            <a href="#cases" class="primary-link">事例を探す</a>
-            <a href="#submit" class="secondary-link">掲載方針を見る</a>
+      <section class="hero-section" aria-labelledby="hero-title" data-hero>
+        <div class="hero-pin">
+          <figure class="hero-visual" aria-hidden="true">
+            <img src="./assets/workroom-atrium.png" alt="" width="1800" height="1080">
+          </figure>
+          <div class="hero-stage" data-hero-stage>
+            <div class="hero-copy glass-panel">
+              <p class="eyebrow">AI Agent Workroom</p>
+              <h1 id="hero-title"><span>AIエージェントで</span><span>実際にできたことを</span><span>覗く</span></h1>
+              <p class="lead">Codex、Claude Code、ChatGPTなどで完了した作業だけを集めるワークルーム。手順の公開ではなく、結果、必要な入力、人間が確認したポイントを短く残します。</p>
+              <form class="hero-search" data-hero-form>
+                <label>
+                  <span>何ができるか探す</span>
+                  <input type="search" placeholder="WordPress、note、Obsidian、YouTube" data-hero-search>
+                </label>
+                <button type="submit">検索</button>
+              </form>
+              <div class="hero-actions">
+                <a href="#cases" class="primary-link">事例を探す</a>
+                <a href="#submit" class="secondary-link">掲載方針を見る</a>
+              </div>
+            </div>
+
+            <div class="hero-workbench" aria-label="AI Agent Workroomの概要">
+              <article class="glass-tile tile-large">
+                <span class="tile-label">Today in workroom</span>
+                <strong>11</strong>
+                <p>公開済みの実践ログ</p>
+              </article>
+              <article class="glass-tile">
+                <span class="tile-label">Codex</span>
+                <strong>WordPress</strong>
+                <p>記事公開、画像挿入、テーマ改善</p>
+              </article>
+              <article class="glass-tile">
+                <span class="tile-label">Claude Code</span>
+                <strong>Draft</strong>
+                <p>台本、設計、下書き補助</p>
+              </article>
+              <article class="glass-tile">
+                <span class="tile-label">Route</span>
+                <strong>1 link</strong>
+                <p>詳しい販売ページやnoteへ接続</p>
+              </article>
+            </div>
+          </div>
+          <div class="scroll-cue" aria-hidden="true">
+            <span>Scroll</span>
           </div>
         </div>
-        <figure class="hero-visual">
-          <img src="./assets/agent-works-hero.png" alt="AIエージェントの作業事例が知識ボードへ集まる抽象ビジュアル" width="1600" height="900">
-        </figure>
       </section>
 
-      <section class="search-band" id="cases" aria-labelledby="cases-title">
-        <div class="section-heading">
+      <section class="search-band scene-section" id="cases" aria-labelledby="cases-title">
+        <div class="section-heading reveal-left" data-reveal>
           <p class="eyebrow">Works Index</p>
           <h2 id="cases-title">できたことを検索</h2>
           <p>作業名、AIエージェント、カテゴリ、タグで探せます。現在は運営による初期事例のみ掲載しています。</p>
         </div>
 
-        <div class="search-panel">
+        <div class="search-panel glass-panel reveal-right" data-reveal>
           <label class="search-box">
             <span>キーワード</span>
             <input type="search" placeholder="例: WordPress、note、Obsidian、Chrome操作" data-search>
@@ -75,7 +105,7 @@
           </div>
         </div>
 
-        <div class="result-bar">
+        <div class="result-bar reveal-left" data-reveal>
           <span data-count>0件</span>
           <span>詳細手順は外部リンク側へ。サイト内は「できたこと」と判断材料に絞ります。</span>
         </div>
@@ -84,30 +114,30 @@
         <p class="empty-state" data-empty hidden>該当する事例がありません。キーワードやカテゴリを変えて探してみてください。</p>
       </section>
 
-      <section class="guide-section" id="submit" aria-labelledby="submit-title">
-        <div class="section-heading">
+      <section class="guide-section scene-section" id="submit" aria-labelledby="submit-title">
+        <div class="section-heading reveal-left" data-reveal>
           <p class="eyebrow">For Contributors</p>
           <h2 id="submit-title">一般投稿は準備中です</h2>
           <p>一定数の運営事例を掲載したあと、AIエージェントで実際にできた作業の投稿を受け付ける予定です。</p>
         </div>
         <div class="guide-grid">
-          <article class="guide-item">
+          <article class="guide-item glass-panel" data-reveal>
             <h3>投稿できるもの</h3>
             <p>実際にAIエージェントで完了できた作業。詳しい手順ではなく、結果、必要な入力、人間確認、向いている人を掲載します。</p>
           </article>
-          <article class="guide-item">
+          <article class="guide-item glass-panel" data-reveal>
             <h3>リンクは1本</h3>
             <p>投稿者はnote、ブログ、YouTube、サービス販売ページなどのリンクを1本だけ掲載できます。リンクにはUGC向け属性を付けます。</p>
           </article>
-          <article class="guide-item">
+          <article class="guide-item glass-panel" data-reveal>
             <h3>承認制で開始</h3>
             <p>低品質投稿、誇大表現、アフィリエイト直リンク、個人情報を含む投稿を避けるため、初期は運営承認後に公開します。</p>
           </article>
         </div>
       </section>
 
-      <section class="policy-section" id="policy" aria-labelledby="policy-title">
-        <div>
+      <section class="policy-section scene-section" id="policy" aria-labelledby="policy-title">
+        <div class="reveal-left" data-reveal>
           <p class="eyebrow">Editorial Policy</p>
           <h2 id="policy-title">掲載するのは「できたこと」だけ</h2>
         </div>

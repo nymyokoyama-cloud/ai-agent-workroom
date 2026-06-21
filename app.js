@@ -17,6 +17,9 @@ const emptyState = document.querySelector("[data-empty]");
 const modal = document.querySelector("[data-modal]");
 const modalPanel = document.querySelector("[data-modal-panel]");
 const modalClose = document.querySelector("[data-modal-close]");
+const hero = document.querySelector("[data-hero]");
+const heroStage = document.querySelector("[data-hero-stage]");
+const revealTargets = new Set();
 
 function uniqueValues(key) {
   return ["すべて", ...Array.from(new Set(cases.map((item) => item[key]))).sort((a, b) => a.localeCompare(b, "ja"))];
@@ -59,9 +62,11 @@ function filteredCases() {
   });
 }
 
-function renderCard(item) {
+function renderCard(item, index) {
   const article = document.createElement("article");
-  article.className = "work-card";
+  article.className = "work-card glass-panel";
+  article.dataset.reveal = "";
+  article.style.setProperty("--reveal-delay", `${Math.min(index * 55, 440)}ms`);
   article.innerHTML = `
     <div class="work-card__meta">
       <span>${escapeHtml(item.agent)}</span>
@@ -84,6 +89,7 @@ function render() {
   countLabel.textContent = `${list.length}件`;
   caseGrid.replaceChildren(...list.map(renderCard));
   emptyState.hidden = list.length !== 0;
+  observeRevealTargets(caseGrid.querySelectorAll("[data-reveal]"));
 }
 
 function setQuery(value) {
@@ -173,4 +179,39 @@ document.addEventListener("keydown", (event) => {
   if (event.key === "Escape" && !modal.hidden) closeModal();
 });
 
+function updateHeroProgress() {
+  if (!hero || !heroStage) return;
+  const rect = hero.getBoundingClientRect();
+  const travel = Math.max(1, hero.offsetHeight - window.innerHeight);
+  const progress = Math.min(1, Math.max(0, -rect.top / travel));
+  hero.style.setProperty("--hero-progress", progress.toFixed(4));
+  heroStage.style.setProperty("--hero-progress", progress.toFixed(4));
+}
+
+const revealObserver = "IntersectionObserver" in window
+  ? new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("is-visible");
+        }
+      });
+    }, { threshold: 0.18, rootMargin: "0px 0px -8% 0px" })
+  : null;
+
+function observeRevealTargets(targets) {
+  targets.forEach((target) => {
+    if (revealTargets.has(target)) return;
+    revealTargets.add(target);
+    if (revealObserver) {
+      revealObserver.observe(target);
+    } else {
+      target.classList.add("is-visible");
+    }
+  });
+}
+
+window.addEventListener("scroll", updateHeroProgress, { passive: true });
+window.addEventListener("resize", updateHeroProgress);
+observeRevealTargets(document.querySelectorAll("[data-reveal]"));
+updateHeroProgress();
 render();
