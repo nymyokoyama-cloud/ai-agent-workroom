@@ -6,6 +6,37 @@ AIエージェントで実際にできた作業を集める、静的な「でき
 
 Cloudflare Pagesで公開する場合は、このディレクトリをGitHubリポジトリにしてPagesへ接続します。
 
+## Repository
+
+https://github.com/nymyokoyama-cloud/ai-agent-workroom
+
+## Live Site
+
+https://ai-agent-workroom.pages.dev
+
+## Cloudflare Pages
+
+- Project: `ai-agent-workroom`
+- Production URL: https://ai-agent-workroom.pages.dev
+- Framework preset: None
+- Build command: 空欄
+- Build output directory: `/`
+- Production branch: `main`
+
+## 更新フロー
+
+ローカルで編集して `main` へpushすると、Cloudflare Pagesが自動で本番へ反映します。
+
+```bash
+git add .
+git commit -m "Update workroom cases"
+git push
+```
+
+## 手動公開する場合
+
+GitHub連携を使わずCloudflare Pagesへ手動アップロードする場合は、この設定で公開します。
+
 - Framework preset: None
 - Build command: 空欄
 - Build output directory: `/`
